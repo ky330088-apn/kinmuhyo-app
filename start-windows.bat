@@ -1,9 +1,8 @@
 @echo off
 chcp 65001 > nul
-echo 勤務表アプリを起動しています...
-node "%~dp0start.js"
+powershell -ExecutionPolicy Bypass -File "%~dp0start-windows.ps1"
 if %errorlevel% neq 0 (
   echo.
-  echo エラーが発生しました。Node.js がインストールされているか確認してください。
+  echo エラーが発生しました。
   pause
 )
