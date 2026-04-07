@@ -152,5 +152,27 @@ app.get('/api/export', (req, res) => {
 });
 
 // ============================================================
+// データ 手動書き出し・読み込み API
+// ============================================================
+
+// 全データをJSONファイルとしてダウンロード
+app.get('/api/data/export', (req, res) => {
+  const data = db.exportAll();
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''kinmuhyo_backup_${new Date().toISOString().slice(0,10)}.json`);
+  res.send(JSON.stringify(data, null, 2));
+});
+
+// JSONファイルをアップロードして全データを上書き
+app.post('/api/data/import', (req, res) => {
+  const data = req.body;
+  if (!data || !Array.isArray(data.staff) || !Array.isArray(data.shifts)) {
+    return res.status(400).json({ error: '正しいバックアップファイルではありません' });
+  }
+  db.importAll(data);
+  res.json({ success: true, staff: data.staff.length, shifts: data.shifts.length });
+});
+
+// ============================================================
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

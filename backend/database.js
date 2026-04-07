@@ -188,6 +188,21 @@ const db = {
     const prefix = `${year}-${String(month).padStart(2, '0')}`;
     return load().shifts.filter((s) => s.date.startsWith(prefix));
   },
+
+  // 全データのバックアップ書き出し
+  exportAll() {
+    return load();
+  },
+
+  // 全データの上書き読み込み
+  importAll(data) {
+    save({
+      staff: data.staff || [],
+      shifts: data.shifts || [],
+      next_staff_id: data.next_staff_id || (Math.max(0, ...( data.staff || []).map(s => s.id)) + 1),
+      next_shift_id: data.next_shift_id || (Math.max(0, ...( data.shifts || []).map(s => s.id)) + 1),
+    });
+  },
 };
 
 module.exports = db;

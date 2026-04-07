@@ -144,3 +144,75 @@
   color: var(--primary);
   text-decoration: underline;
 }
+
+/* バックアップボタン */
+.backup-buttons {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.backup-item {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backup-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+}
+
+.backup-item__desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.backup-divider {
+  font-size: 24px;
+  padding-top: 10px;
+  color: var(--text-muted);
+}
+
+.backup-howto {
+  background: var(--secondary);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.backup-howto strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.backup-howto ol {
+  padding-left: 18px;
+}
+
+/* メッセージ色分け */
+.settings-message--success {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.settings-message--error {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.settings-message--info {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
