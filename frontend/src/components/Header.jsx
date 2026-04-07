@@ -6,6 +6,7 @@ const TABS = [
   { id: 'calendar', label: 'シフト表' },
   { id: 'staff', label: 'スタッフ管理' },
   { id: 'summary', label: '勤務集計' },
+  { id: 'settings', label: '設定' },
 ];
 
 export default function Header({ year, month, onPrev, onNext, tab, setTab }) {

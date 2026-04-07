@@ -3,6 +3,7 @@ import Header from './components/Header.jsx';
 import StaffManager from './components/StaffManager.jsx';
 import ShiftCalendar from './components/ShiftCalendar.jsx';
 import Summary from './components/Summary.jsx';
+import Settings from './components/Settings.jsx';
 import ShiftModal from './components/ShiftModal.jsx';
 import { fetchStaff, fetchShifts, fetchSummary, saveShift, deleteShift } from './api.js';
 import './App.css';
@@ -103,6 +104,9 @@ export default function App() {
         )}
         {tab === 'summary' && (
           <Summary year={year} month={month} summary={summary} />
+        )}
+        {tab === 'settings' && (
+          <Settings />
         )}
       </main>
 

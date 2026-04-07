@@ -1,8 +1,71 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'kinmuhyo.json');
+const CONFIG_PATH = path.join(__dirname, 'config.json');
 
+// ============================================================
+// 設定管理
+// ============================================================
+function loadConfig() {
+  if (!fs.existsSync(CONFIG_PATH)) {
+    return { dataDir: '' };
+  }
+  return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
+}
+
+function saveConfig(config) {
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8');
+}
+
+function getDataFilePath() {
+  const config = loadConfig();
+  if (config.dataDir && fs.existsSync(config.dataDir)) {
+    return path.join(config.dataDir, 'kinmuhyo.json');
+  }
+  // 未設定またはフォルダが見つからない場合はローカル保存
+  return path.join(__dirname, 'kinmuhyo.json');
+}
+
+// Google Drive のよくあるパスを自動検出
+function detectGoogleDrivePaths() {
+  const home = process.env.HOME || process.env.USERPROFILE || '';
+  const candidates = [];
+
+  if (process.platform === 'win32') {
+    // Windows
+    candidates.push(
+      path.join(home, 'Google Drive', 'My Drive'),
+      path.join(home, 'Google Drive', 'マイドライブ'),
+      path.join(home, 'GoogleDrive', 'My Drive'),
+      'G:\\My Drive',
+      'G:\\マイドライブ',
+    );
+  } else {
+    // Mac / Linux
+    const cloudStorage = path.join(home, 'Library', 'CloudStorage');
+    if (fs.existsSync(cloudStorage)) {
+      try {
+        const dirs = fs.readdirSync(cloudStorage).filter(d => d.startsWith('GoogleDrive'));
+        dirs.forEach(d => {
+          candidates.push(path.join(cloudStorage, d, 'My Drive'));
+          candidates.push(path.join(cloudStorage, d, 'マイドライブ'));
+        });
+      } catch {}
+    }
+    candidates.push(
+      path.join(home, 'Google Drive', 'My Drive'),
+      path.join(home, 'Google Drive', 'マイドライブ'),
+    );
+  }
+
+  return candidates.filter(p => {
+    try { return fs.existsSync(p); } catch { return false; }
+  });
+}
+
+// ============================================================
+// データファイル読み書き
+// ============================================================
 const INITIAL_DATA = {
   staff: [],
   shifts: [],
@@ -11,19 +74,35 @@ const INITIAL_DATA = {
 };
 
 function load() {
-  if (!fs.existsSync(DB_PATH)) {
-    fs.writeFileSync(DB_PATH, JSON.stringify(INITIAL_DATA, null, 2), 'utf8');
+  const dbPath = getDataFilePath();
+  if (!fs.existsSync(dbPath)) {
+    fs.writeFileSync(dbPath, JSON.stringify(INITIAL_DATA, null, 2), 'utf8');
     return INITIAL_DATA;
   }
-  return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  return JSON.parse(fs.readFileSync(dbPath, 'utf8'));
 }
 
 function save(data) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf8');
+  const dbPath = getDataFilePath();
+  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// シンプルなDBラッパー
+// ============================================================
+// DB ラッパー
+// ============================================================
 const db = {
+  // 設定
+  getConfig() {
+    const config = loadConfig();
+    const detectedPaths = detectGoogleDrivePaths();
+    const currentPath = getDataFilePath();
+    return { ...config, detectedPaths, currentPath };
+  },
+  setConfig(dataDir) {
+    saveConfig({ dataDir });
+    return { dataDir, currentPath: getDataFilePath() };
+  },
+
   // スタッフ
   getAllStaff() {
     return load().staff;

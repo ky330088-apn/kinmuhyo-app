@@ -1,3 +1,4 @@
 node_modules/
 backend/kinmuhyo.json
+backend/config.json
 .claude/

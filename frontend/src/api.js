@@ -55,3 +55,17 @@ export async function fetchSummary(year, month) {
 export function exportUrl(year, month, format) {
   return `${BASE}/export?year=${year}&month=${month}&format=${format}`;
 }
+
+export async function fetchConfig() {
+  const res = await fetch(`${BASE}/config`);
+  return res.json();
+}
+
+export async function saveConfig(dataDir) {
+  const res = await fetch(`${BASE}/config`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dataDir }),
+  });
+  return res.json();
+}
