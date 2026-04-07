@@ -145,6 +145,46 @@
   font-weight: 600;
 }
 
+/* ドラッグ選択 */
+.calendar__cell--selected {
+  background: #bfdbfe !important;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  position: relative;
+}
+
+.calendar__cell-select-mark {
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0.15);
+  pointer-events: none;
+  border-radius: 3px;
+}
+
+.calendar__drag-hint {
+  background: #3b82f6;
+  color: white;
+  text-align: center;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.calendar__tip {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-top: 8px;
+}
+
 .calendar__empty {
   text-align: center;
   padding: 60px 20px;
